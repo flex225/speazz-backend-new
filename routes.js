@@ -43,6 +43,7 @@ router.post('/place', withBody, async function (req, res) {
     const placeQuery = await db.query(`SELECT id FROM locations WHERE google_id=$1`, [googlePlaceId])
 
     console.log("#art", placeQuery.rowCount)
+    console.log("#art", JSON.stringify(placeQuery, null, 2))
 
     if (placeQuery.rowCount > 0) {
         place = placeQuery.rows[0]
@@ -51,12 +52,14 @@ router.post('/place', withBody, async function (req, res) {
         place = placeInsertQuery.rows[0]
     }
 
+    console.log("#art:place", JSON.stringify(place, null, 2))
+
 
     const userQuery = await db.query(`SELECT * FROM users WHERE uuid=$1`, [userId])
 
     const user = userQuery.rows[0]
 
-    await db.query(`INSERT INTO users_locations (user_id, location_id) VALUES ($1,$2)`, [place.id, user.id])
+    await db.query(`INSERT INTO users_locations (user_id, location_id) VALUES ($1,$2)`, [user.id, place.id])
 
     res.json("success")
     
