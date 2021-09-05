@@ -12,7 +12,7 @@ const client = new Client({
 client.connect().then(async () => {
   console.log('Connected to database')
   try {
-    await migrate({client}, "./speazz.sql")
+    await migrate({client}, "./migrations")
   } catch(ex) {
     console.log("#art", "Error while migrating", ex)
   }
