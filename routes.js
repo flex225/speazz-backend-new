@@ -20,7 +20,7 @@ router.post('/user', withBody, async function (req, res) {
 
     const {uuid} = req.body
 
-    const userQuery = await makeQuery(`INSERT INTO users (uuid) VALUES (${uuid})`, [])
+    const userQuery = await makeQuery(`INSERT INTO users (uuid) VALUES (${db.escape(uuid)})`, [])
 
     console.log("#art", JSON.stringify(userQuery, null, 2))
     
