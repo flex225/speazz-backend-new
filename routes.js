@@ -84,7 +84,7 @@ router.get('/trufflepig', async function (req, res, next) {
 
 
     const queryText = `
-    SELECT locations.name, locations.id, t1.times
+    SELECT locations.name, DISTINC ON(locations.id), t1.times,
     FROM users_locations
     JOIN locations on users_locations.location_id = locations.id
     JOIN (
@@ -95,7 +95,7 @@ router.get('/trufflepig', async function (req, res, next) {
     ) as t1 on users_locations.user_id = t1.curr_user
     WHERE 
     user_id in (
-        SELECT users_locations.user_id
+        SELECT DISTINC ON(users_locations.user_id)
         FROM users_locations 
         WHERE users_locations.user_id not in ($2) and users_locations.location_id in ($1)
         GROUP BY user_id
