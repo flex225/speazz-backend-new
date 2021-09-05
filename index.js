@@ -16,4 +16,10 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500)
 })
 
+
+app.listen(process.env.PORT)
+    .then(server => {
+        console.log('Working on port: ' + server.address().port)
+    })
+
 module.exports = app
