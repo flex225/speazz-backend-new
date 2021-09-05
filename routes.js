@@ -40,7 +40,7 @@ router.post('/place', withBody, async function (req, res) {
 
     let place
 
-    const placeQuery = await makeQuery(`SELECT id FROM locations WHERE google_id=$1`, [googlePlaceId])
+    const placeQuery = await makeQuery(`SELECT id FROM locations WHERE google_id=${db.escape(googlePlaceId)}`)
 
     console.log("#art", placeQuery.rowCount)
     console.log("#art", JSON.stringify(placeQuery, null, 2))
@@ -48,34 +48,34 @@ router.post('/place', withBody, async function (req, res) {
     if (placeQuery.rowCount > 0) {
         place = placeQuery.rows[0]
     } else {
-        const placeInsertQuery = await makeQuery(`INSERT INTO locations (name, google_id) VALUES ($1, $2) RETURNING id`, [placeName, googlePlaceId])
+        const placeInsertQuery = await makeQuery(`INSERT INTO locations (name, google_id) VALUES (${db.escape(placeName)}, ${db.escape(googlePlaceId)}) RETURNING id`)
         place = placeInsertQuery.rows[0]
     }
 
     console.log("#art:place", JSON.stringify(place, null, 2))
 
 
-    const userQuery = await makeQuery(`SELECT * FROM users WHERE uuid=$1`, [userId])
+    const userQuery = await makeQuery(`SELECT * FROM users WHERE uuid=${db.escape(userId)}`)
 
     const user = userQuery.rows[0]
 
-    await makeQuery(`INSERT INTO users_locations (user_id, location_id) VALUES ($1,$2)`, [user.id, place.id])
+    await makeQuery(`INSERT INTO users_locations (user_id, location_id) VALUES (${db.escape(user.id)},${db.escape(place.id)})`)
 
     res.json("success")
     
 })
 
-router.get('/trufflepig', async function (req, res, next) {
+router.get('/trufflepig', async function (req, res) {
 
     const { userId } = req.query
 
-    const userQuery = await makeQuery(`SELECT * FROM users WHERE uuid=$1`, [userId])
+    const userQuery = await makeQuery(`SELECT * FROM users WHERE uuid=${db.escape(userId)}`)
 
     const user = userQuery.rows[0]
 
     console.log("#art:user", JSON.stringify(user, null, 2))
     
-    const userPlacesQuery = await makeQuery(`SELECT location_id FROM users_locations WHERE user_id=$1`, [user.id])
+    const userPlacesQuery = await makeQuery(`SELECT location_id FROM users_locations WHERE user_id=${db.escape(user.id)}`)
 
     const placesIds = userPlacesQuery.rows.map(e => e.location_id).join(',')
 
@@ -90,22 +90,22 @@ router.get('/trufflepig', async function (req, res, next) {
     JOIN (
         SELECT COUNT(user_id) as times, user_id as curr_user
         FROM users_locations 
-        WHERE users_locations.user_id not in ($2) and users_locations.location_id in ($1)
+        WHERE users_locations.user_id not in (${db.escape(user.id)}) and users_locations.location_id in (${db.escape(placesIds)})
         GROUP BY user_id
     ) as t1 on users_locations.user_id = t1.curr_user
     WHERE 
     user_id in (
         SELECT users_locations.user_id
         FROM users_locations 
-        WHERE users_locations.user_id not in ($2) and users_locations.location_id in ($1)
+        WHERE users_locations.user_id not in (${db.escape(user.id)}) and users_locations.location_id in (${db.escape(placesIds)})
         GROUP BY user_id
     )
-    AND users_locations.location_id not in ($1)
+    AND users_locations.location_id not in (${db.escape(placesIds)})
     group by location_id
     order by times DESC;
     `.trim()
 
-    const trufflepigQuery = await makeQuery(queryText, [placesIds, user.id])
+    const trufflepigQuery = await makeQuery(queryText)
 
     res.json({items: trufflepigQuery.rows})
 })
