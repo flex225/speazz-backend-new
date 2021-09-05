@@ -4,12 +4,23 @@ const bodyParser = require('body-parser')
 const withBody = bodyParser.json()
 const db = require("./db")
 
+
+router.post("/clear", async () => {
+
+
+    await db.query(`TRUNCATE TABLE  users`)
+    await db.query(`TRUNCATE TABLE  locations`)
+    await db.query(`TRUNCATE TABLE  users_locations`)
+    
+    res.json("success")
+})
+
 router.post('/user', withBody, async function (req, res) {
     console.log(req.body)
 
     const {uuid} = req.body
 
-    db.query(`INSERT INTO users (uuid) VALUES (${uuid})`)
+    await db.query(`INSERT INTO users (uuid) VALUES (${uuid})`)
     
     res.json("success")
     
@@ -37,6 +48,7 @@ router.post('/place', withBody, async function (req, res) {
     res.json("success")
     
 })
+
 router.get('/trufflepig', async function (req, res, next) {
 
     const { userId } = req.query
@@ -76,5 +88,7 @@ router.get('/trufflepig', async function (req, res, next) {
 
     res.json({items: trufflepigQuery.rows})
 })
+
+
 
 module.exports = router
