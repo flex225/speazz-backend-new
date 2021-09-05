@@ -8,9 +8,9 @@ const db = require("./db")
 router.post("/clear", async (req, res) => {
 
 
+    await db.query(`DELETE FROM users_locations`)
     await db.query(`DELETE FROM users`)
     await db.query(`DELETE FROM locations`)
-    await db.query(`DELETE FROM users_locations`)
 
     res.json("success")
 })
