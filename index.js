@@ -17,9 +17,8 @@ app.use(function (err, req, res, next) {
 })
 
 
-app.listen(process.env.PORT)
-    .then(()=> {
-        console.log('Express started')
-    })
+app.listen(process.env.PORT, ()=> {
+    console.log('Express started')
+})
 
 module.exports = app
