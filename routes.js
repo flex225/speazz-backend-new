@@ -37,9 +37,20 @@ router.post('/place', withBody, async function (req, res) {
         googlePlaceId,
     } = req.body
 
-    const placeQuery = await db.query(`INSERT INTO locations (name, google_id) VALUES ($1, $2) RETURNING id`, [placeName, googlePlaceId])
 
-    const place = placeQuery.rows[0]
+    let place
+
+    const placeQuery = await db.query(`SELECT id FROM locations WHERE google_id=$1`, [googlePlaceId])
+
+    console.log("#art", placeQuery.rowCount)
+
+    if (placeQuery.rowCount > 0) {
+        place = placeQuery.rows[0]
+    } else {
+        const placeInsertQuery = await db.query(`INSERT INTO locations (name, google_id) VALUES ($1, $2) RETURNING id`, [placeName, googlePlaceId])
+        place = placeInsertQuery.rows[0]
+    }
+
 
     const userQuery = await db.query(`SELECT * FROM users WHERE uuid=$1`, [userId])
 
