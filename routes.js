@@ -73,7 +73,7 @@ router.get('/trufflepig', async function (req, res, next) {
 
     const user = userQuery.rows[0]
     
-    const userPlacesQuery = await db.query(`SELECT * FROM users_locations WHERE user_id=$1`, [userId])
+    const userPlacesQuery = await db.query(`SELECT id FROM users_locations WHERE user_id=$1`, [user.id])
 
     const placesIds = userPlacesQuery.rows.map(e => e.id).join(',')
 
