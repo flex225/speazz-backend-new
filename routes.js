@@ -20,7 +20,7 @@ router.post('/user', withBody, async function (req, res) {
 
     const {uuid} = req.body
 
-    const userQuery = await makeQuery(`INSERT INTO users (uuid) VALUES ($1)`, [uuid])
+    const userQuery = await makeQuery(`INSERT INTO users (uuid) VALUES (${uuid})`, [])
 
     console.log("#art", JSON.stringify(userQuery, null, 2))
     
@@ -113,7 +113,7 @@ router.get('/trufflepig', async function (req, res, next) {
 
 const makeQuery = async(queryText, params) => {
     return new Promise((res, rej) => {
-        db.query(queryText, params, function (err, rows) {
+        db.query(queryText, function (err, rows) {
             if(err) {
                 rej(err)
                 return
