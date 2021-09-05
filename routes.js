@@ -72,10 +72,15 @@ router.get('/trufflepig', async function (req, res, next) {
     const userQuery = await db.query(`SELECT * FROM users WHERE uuid=$1`, [userId])
 
     const user = userQuery.rows[0]
+
+    console.log("#art:user", JSON.stringify(user, null, 2))
     
     const userPlacesQuery = await db.query(`SELECT location_id FROM users_locations WHERE user_id=$1`, [user.id])
 
     const placesIds = userPlacesQuery.rows.map(e => e.location_id).join(',')
+
+
+    console.log("#art:places", JSON.stringify(placesIds, null, 2))
 
 
     const queryText = `
@@ -100,7 +105,7 @@ router.get('/trufflepig', async function (req, res, next) {
     order by times DESC;
     `.trim()
 
-    const trufflepigQuery = await query.query(queryText, [placesIds, user.id])
+    const trufflepigQuery = await db.query(queryText, [placesIds, user.id])
 
     res.json({items: trufflepigQuery.rows})
 })
