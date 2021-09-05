@@ -37,15 +37,15 @@ router.post('/place', withBody, async function (req, res) {
         googlePlaceId,
     } = req.body
 
-    const placeQuery = await db.query(`INSERT INTO locations (name, google_id) VALUES (${placeName}, ${googlePlaceId}) RETURNING id`)
+    const placeQuery = await db.query(`INSERT INTO locations (name, google_id) VALUES ($1, $2) RETURNING id`, [placeName, googlePlaceId])
 
     const place = placeQuery.rows[0]
 
-    const userQuery = await db.query(`SELECT * FROM users WHERE uuid=${userId}`)
+    const userQuery = await db.query(`SELECT * FROM users WHERE uuid=$1`, [userId])
 
     const user = userQuery.rows[0]
 
-    await db.query(`INSERT INTO users_locations (user_id, location_id) VALUES (${place.id}, ${user.id})`)
+    await db.query(`INSERT INTO users_locations (user_id, location_id) VALUES ($1,$2)`, [place.id, user.id])
 
     res.json("success")
     
@@ -55,11 +55,11 @@ router.get('/trufflepig', async function (req, res, next) {
 
     const { userId } = req.query
 
-    const userQuery = await db.query(`SELECT * FROM users WHERE uuid=${userId}`)
+    const userQuery = await db.query(`SELECT * FROM users WHERE uuid=$1`, [userId])
 
     const user = userQuery.rows[0]
     
-    const userPlacesQuery = await db.query(`SELECT * FROM users_locations WHERE user_id=${user.id}`)
+    const userPlacesQuery = await db.query(`SELECT * FROM users_locations WHERE user_id=$1`, [userId])
 
     const placesIds = userPlacesQuery.rows.map(e => e.id).join(',')
 
@@ -71,22 +71,22 @@ router.get('/trufflepig', async function (req, res, next) {
     JOIN (
         SELECT COUNT(user_id) as times, user_id as curr_user
         FROM users_locations 
-        WHERE users_locations.user_id not in (1) and users_locations.location_id in (${placesIds})
+        WHERE users_locations.user_id not in ($2) and users_locations.location_id in ($1)
         GROUP BY user_id
     ) as t1 on users_locations.user_id = t1.curr_user
     WHERE 
     user_id in (
         SELECT users_locations.user_id
         FROM users_locations 
-        WHERE users_locations.user_id not in (1) and users_locations.location_id in (${placesIds})
+        WHERE users_locations.user_id not in ($2) and users_locations.location_id in ($1)
         GROUP BY user_id
     )
-    AND users_locations.location_id not in (${placesIds})
+    AND users_locations.location_id not in ($1)
     group by location_id
     order by times DESC;
     `.trim()
 
-    const trufflepigQuery = await query.query(queryText)
+    const trufflepigQuery = await query.query(queryText, [placesIds, user.id])
 
     res.json({items: trufflepigQuery.rows})
 })
