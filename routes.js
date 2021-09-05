@@ -37,7 +37,7 @@ router.post('/place', withBody, async function (req, res) {
     res.json("success")
     
 })
-router.get('/trufflepig', function (req, res, next) {
+router.get('/trufflepig', async function (req, res, next) {
 
     const { userId } = req.query
 
