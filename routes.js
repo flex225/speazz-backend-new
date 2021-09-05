@@ -20,7 +20,7 @@ router.post('/user', withBody, async function (req, res) {
 
     const {uuid} = req.body
 
-    const userQuery = await db.query(`INSERT INTO users (uuid) VALUES (${uuid})`)
+    const userQuery = await db.query(`INSERT INTO users (uuid) VALUES ($1)`, [uuid])
 
     console.log("#art", JSON.stringify(userQuery, null, 2))
     
@@ -37,7 +37,7 @@ router.post('/place', withBody, async function (req, res) {
         googlePlaceId,
     } = req.body
 
-    const placeQuery = await db.query(`INSERT INTO locations (name, google_id) VALUES (${placeName}, ${googlePlaceId})`)
+    const placeQuery = await db.query(`INSERT INTO locations (name, google_id) VALUES (${placeName}, ${googlePlaceId}) RETURNING id`)
 
     const place = placeQuery.rows[0]
 
