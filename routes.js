@@ -5,7 +5,7 @@ const withBody = bodyParser.json()
 const db = require("./db")
 
 
-router.post("/clear", async () => {
+router.post("/clear", async (req, res) => {
 
 
     await db.query(`DELETE FROM users`)
