@@ -1,11 +1,11 @@
 CREATE TABLE users (
-    id int primary key AUTO_INCREMENT,
+    id SERIAL primary key,
     uuid varchar(255),
     name varchar(255)
 );
 
 CREATE TABLE locations (
-    id int primary key AUTO_INCREMENT,
+    id SERIAL primary key,
     name varchar(255),
     google_id varchar(255)
 );
