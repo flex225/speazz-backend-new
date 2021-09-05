@@ -18,8 +18,8 @@ app.use(function (err, req, res, next) {
 
 
 app.listen(process.env.PORT)
-    .then(server => {
-        console.log('Working on port: ' + server.address().port)
+    .then(()=> {
+        console.log('Express started')
     })
 
 module.exports = app
