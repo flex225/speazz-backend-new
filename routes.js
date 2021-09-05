@@ -8,12 +8,10 @@ const db = require("./db")
 router.post("/clear", async () => {
 
 
-    await db.query(`SET FOREIGN_KEY_CHECKS = 0`)
-    await db.query(`TRUNCATE TABLE  users`)
-    await db.query(`TRUNCATE TABLE  locations`)
-    await db.query(`TRUNCATE TABLE  users_locations`)
-    await db.query(`SET FOREIGN_KEY_CHECKS = 1`)
-    
+    await db.query(`DELETE FROM users`)
+    await db.query(`DELETE FROM locations`)
+    await db.query(`DELETE FROM users_locations`)
+
     res.json("success")
 })
 
@@ -22,7 +20,9 @@ router.post('/user', withBody, async function (req, res) {
 
     const {uuid} = req.body
 
-    await db.query(`INSERT INTO users (uuid) VALUES (${uuid})`)
+    const userQuery = await db.query(`INSERT INTO users (uuid) VALUES (${uuid})`)
+
+    console.log("#art", JSON.stringify(userQuery, null, 2))
     
     res.json("success")
     
