@@ -8,9 +8,11 @@ const db = require("./db")
 router.post("/clear", async () => {
 
 
+    await db.query(`SET FOREIGN_KEY_CHECKS = 0`)
     await db.query(`TRUNCATE TABLE  users`)
     await db.query(`TRUNCATE TABLE  locations`)
     await db.query(`TRUNCATE TABLE  users_locations`)
+    await db.query(`SET FOREIGN_KEY_CHECKS = 1`)
     
     res.json("success")
 })
