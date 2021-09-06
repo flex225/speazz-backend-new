@@ -47,6 +47,7 @@ router.post('/place', withBody, async function (req, res) {
             vincinity
         } = req.body
 
+        console.log("#art", images)
         let image = null
 
         if(images && images.length > 0) {
