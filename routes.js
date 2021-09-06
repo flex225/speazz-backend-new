@@ -43,8 +43,15 @@ router.post('/place', withBody, async function (req, res) {
             userId,
             name: placeName,
             googlePlaceId,
+            images,
+            vincinity
         } = req.body
 
+        let image = null
+
+        if(images && images.length > 0) {
+            image = image[0].photoReference
+        }
 
         let place
 
@@ -56,7 +63,7 @@ router.post('/place', withBody, async function (req, res) {
         if (placeQuery.length > 0) {
             place = placeQuery[0]
         } else {
-            const placeInsertQuery = await makeQuery(`INSERT INTO locations (name, google_id) VALUES (${db.escape(placeName)}, ${db.escape(googlePlaceId)})`)
+            const placeInsertQuery = await makeQuery(`INSERT INTO locations (name, google_id, image, address) VALUES (${db.escape(placeName)}, ${db.escape(googlePlaceId)}, ${db.escape(image)}, ${db.escape(vincinity)})`)
             place = placeInsertQuery[0]
         }
 
@@ -98,7 +105,7 @@ router.get('/trufflepig', async function (req, res) {
 
 
         const queryText = `
-        SELECT locations.name, locations.id, locations.google_id, MAX(t1.times) as times
+        SELECT locations.name, locations.id, locations.google_id, locations.image, locations.address MAX(t1.times) as times
         FROM users_locations
         JOIN locations on users_locations.location_id = locations.id
         JOIN (
