@@ -65,7 +65,7 @@ router.post('/place', withBody, async function (req, res) {
         } else {
             const placeInsertQuery = await makeQuery(`INSERT INTO locations (name, google_id, image, address) VALUES (${db.escape(placeName)}, ${db.escape(googlePlaceId)}, ${db.escape(image)}, ${db.escape(vincinity)})`)
             
-            console.log("#art:place", JSON.stringify(placeInsertQuery, null, 2))
+            console.log("#art:place:query", JSON.stringify(placeInsertQuery, null, 2))
 
             place = {id : placeInsertQuery[0].insertId}
         }
@@ -75,6 +75,8 @@ router.post('/place', withBody, async function (req, res) {
         const userQuery = await makeQuery(`SELECT * FROM users WHERE uuid=${db.escape(userId)}`)
         
         const user = userQuery[0]
+
+        console.log("#art:user", JSON.stringify(user, null, 2))
         console.log("#art:place", JSON.stringify(place, null, 2))
 
         await makeQuery(`INSERT INTO users_locations (user_id, location_id) VALUES (${db.escape(user.id)},${db.escape(place.id)})`)
