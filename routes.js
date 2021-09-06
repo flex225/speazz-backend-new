@@ -6,11 +6,14 @@ const client = require("./db")
 
 
 router.post("/clear", async (req, res) => {
-    await makeQuery(`DELETE FROM users_locations`)
-    await makeQuery(`DELETE FROM users`)
-    await makeQuery(`DELETE FROM locations`)
-
-    res.json("success")
+    try {
+        await makeQuery(`DELETE FROM users_locations`)
+        await makeQuery(`DELETE FROM users`)
+        await makeQuery(`DELETE FROM locations`)
+        res.json("success")
+    } catch(ex) {
+        res.json("error::" + JSON.stringify(ex))
+    }
 })
 
 router.post('/user', withBody, async function (req, res) {
@@ -26,7 +29,7 @@ router.post('/user', withBody, async function (req, res) {
         
         res.json("success")
     } catch(ex) {
-        res.json("error", JSON.stringify(ex))
+        res.json("error::" + JSON.stringify(ex))
     }
     
 })
@@ -68,7 +71,7 @@ router.post('/place', withBody, async function (req, res) {
 
         res.json("success")
     } catch(ex) {
-        res.json("error", JSON.stringify(ex))
+        res.json("error::" + JSON.stringify(ex))
     }
     
 })
@@ -120,7 +123,7 @@ router.get('/trufflepig', async function (req, res) {
 
         res.json({items: trufflepigQuery})
     } catch(ex) {
-        res.json("error", JSON.stringify(ex))
+        res.json("error::" + JSON.stringify(ex))
     }
 })
 
