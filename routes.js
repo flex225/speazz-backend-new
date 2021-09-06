@@ -67,15 +67,15 @@ router.post('/place', withBody, async function (req, res) {
             
             console.log("#art:place", JSON.stringify(placeInsertQuery, null, 2))
 
-            place = {id : placeInsertQuery.insertId}
+            place = {id : placeInsertQuery[0].insertId}
         }
 
-        console.log("#art:place", JSON.stringify(place, null, 2))
-
-
+        
+        
         const userQuery = await makeQuery(`SELECT * FROM users WHERE uuid=${db.escape(userId)}`)
-
+        
         const user = userQuery[0]
+        console.log("#art:place", JSON.stringify(place, null, 2))
 
         await makeQuery(`INSERT INTO users_locations (user_id, location_id) VALUES (${db.escape(user.id)},${db.escape(place.id)})`)
 
