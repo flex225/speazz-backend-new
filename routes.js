@@ -48,7 +48,7 @@ router.post('/place', withBody, async function (req, res) {
     if (placeQuery.rowCount > 0) {
         place = placeQuery.rows[0]
     } else {
-        const placeInsertQuery = await makeQuery(`INSERT INTO locations (name, google_id) VALUES (${db.escape(placeName)}, ${db.escape(googlePlaceId)}) RETURNING id`)
+        const placeInsertQuery = await makeQuery(`INSERT INTO locations (name, google_id) VALUES (${db.escape(placeName)}, ${db.escape(googlePlaceId)})`)
         place = placeInsertQuery.rows[0]
     }
 
