@@ -98,7 +98,7 @@ router.get('/trufflepig', async function (req, res) {
 
 
         const queryText = `
-        SELECT locations.name, locations.id, t1.times,
+        SELECT locations.name, locations.id, t1.times
         FROM users_locations
         JOIN locations on users_locations.location_id = locations.id
         JOIN (
