@@ -67,7 +67,7 @@ router.post('/place', withBody, async function (req, res) {
             
             console.log("#art:place:query", JSON.stringify(placeInsertQuery, null, 2))
 
-            place = {id : placeInsertQuery[0].insertId}
+            place = {id : placeInsertQuery.insertId}
         }
 
         
