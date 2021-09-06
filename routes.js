@@ -91,7 +91,7 @@ router.get('/trufflepig', async function (req, res) {
         
         const userPlacesQuery = await makeQuery(`SELECT location_id FROM users_locations WHERE user_id=${db.escape(user.id)}`)
 
-        const placesIds = userPlacesQuery.map(e => e.location_id).join(',')
+        const placesIds = userPlacesQuery.map(e => e.location_id)
 
 
         console.log("#art:places", JSON.stringify(placesIds, null, 2))

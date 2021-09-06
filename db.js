@@ -27,7 +27,9 @@ function handleDisconnect() {
     if(err) {                                    
       console.log('error when connecting to db:', err);
       setTimeout(handleDisconnect, 2000);
-    }                                    
+    } else {                                    
+      console.log('Connected to database')
+    }
   });                                    
                                         
   client.on('error', function(err) {
@@ -42,7 +44,6 @@ function handleDisconnect() {
 
 handleDisconnect();
 
-console.log('Connected to database')
 
 
 module.exports = () => client
