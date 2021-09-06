@@ -47,12 +47,12 @@ router.post('/place', withBody, async function (req, res) {
             vincinity
         } = req.body
 
-        console.log("#art", images)
         let image = null
-
+        
         if(images && images.length > 0) {
             image = image[0].photoReference
         }
+        console.log("#art", image)
 
         let place
 
