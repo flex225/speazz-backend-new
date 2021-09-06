@@ -63,7 +63,7 @@ router.post('/place', withBody, async function (req, res) {
         if (placeQuery.length > 0) {
             place = placeQuery[0]
         } else {
-            const placeInsertQuery = await makeQuery(`INSERT INTO locations (name, google_id, image, address) VALUES (${db.escape(placeName)}, ${db.escape(googlePlaceId)}, ${db.escape(image)}, ${db.escape(vincinity)})`)
+            const placeInsertQuery = await makeQuery(`INSERT INTO locations (name, google_id, address) VALUES (${db.escape(placeName)}, ${db.escape(googlePlaceId)}, ${db.escape(vincinity)})`)
             place = placeInsertQuery[0]
         }
 
