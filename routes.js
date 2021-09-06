@@ -2,12 +2,10 @@ var express = require('express')
 var router = express.Router()
 const bodyParser = require('body-parser')
 const withBody = bodyParser.json()
-const db = require("./db")
+const client = require("./db")
 
 
 router.post("/clear", async (req, res) => {
-
-
     await makeQuery(`DELETE FROM users_locations`)
     await makeQuery(`DELETE FROM users`)
     await makeQuery(`DELETE FROM locations`)
@@ -17,6 +15,7 @@ router.post("/clear", async (req, res) => {
 
 router.post('/user', withBody, async function (req, res) {
     try {
+        const db = client()
         console.log(req.body)
 
         const {uuid} = req.body
@@ -36,6 +35,7 @@ router.post('/place', withBody, async function (req, res) {
     try {
         console.log(req.body)
 
+        const db = client()
         const {
             userId,
             name: placeName,
@@ -76,6 +76,7 @@ router.post('/place', withBody, async function (req, res) {
 router.get('/trufflepig', async function (req, res) {
 
     try {
+        const db = client()
 
         const { userId } = req.query
 
@@ -126,6 +127,7 @@ router.get('/trufflepig', async function (req, res) {
 
 const makeQuery = async(queryText, params) => {
     return new Promise((res, rej) => {
+        const db = client()
         db.query(queryText, function (err, rows) {
             if(err) {
                 rej(err)
