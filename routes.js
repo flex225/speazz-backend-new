@@ -48,11 +48,10 @@ router.post('/place', withBody, async function (req, res) {
         } = req.body
 
         let image = null
-        
+
         if(images && images.length > 0) {
-            image = image[0].photoReference
+            image = images[0].photoReference
         }
-        console.log("#art", image)
 
         let place
 
@@ -64,7 +63,7 @@ router.post('/place', withBody, async function (req, res) {
         if (placeQuery.length > 0) {
             place = placeQuery[0]
         } else {
-            const placeInsertQuery = await makeQuery(`INSERT INTO locations (name, google_id, address) VALUES (${db.escape(placeName)}, ${db.escape(googlePlaceId)}, ${db.escape(vincinity)})`)
+            const placeInsertQuery = await makeQuery(`INSERT INTO locations (name, google_id, image, address) VALUES (${db.escape(placeName)}, ${db.escape(googlePlaceId)}, ${db.escape(image)}, ${db.escape(vincinity)})`)
             place = placeInsertQuery[0]
         }
 
